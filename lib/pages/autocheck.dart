@@ -14,8 +14,8 @@ class AutoCheckInOut extends StatefulWidget {
 
 class _AutoCheckInOutState extends State<AutoCheckInOut> {
   User? user;
-  final double _officeLatitude = 26.7818492; // Office Latitude
-  final double _officeLongitude = 75.8191771; // Office Longitude
+  final double _officeLatitude = 26.3070193;
+  final double _officeLongitude = 73.0030597;
 
   double? _currentLatitude;
   double? _currentLongitude;
@@ -25,14 +25,14 @@ class _AutoCheckInOutState extends State<AutoCheckInOut> {
   DateTime? _checkOutTime;
   Stream<Position>? _positionStream;
 
-  final double _radius = 4.0; // 200 meters
+  final double _radius = 4.0; // radius
 
   @override
   void initState() {
     super.initState();
     user = FirebaseAuth.instance.currentUser;
     _retrieveIncompleteCheckIn(); // Check for existing check-in records
-    _monitorLocation(); // Start monitoring location in real-time
+    _monitorLocation(); // Monitoring location in real-time
     _scheduleBackgroundCheck(); // Schedule background check
   }
 
@@ -40,7 +40,7 @@ class _AutoCheckInOutState extends State<AutoCheckInOut> {
     Workmanager().registerPeriodicTask(
       "1",
       "backgroundLocationCheck",
-      frequency: const Duration(minutes: 15), // Adjust the frequency as needed
+      frequency: const Duration(seconds: 1),
     );
   }
 
@@ -99,7 +99,7 @@ class _AutoCheckInOutState extends State<AutoCheckInOut> {
     _positionStream = Geolocator.getPositionStream(
       locationSettings: const LocationSettings(
         accuracy: LocationAccuracy.high,
-        distanceFilter: 1,
+        distanceFilter: 0,
       ),
     );
 
@@ -128,7 +128,7 @@ class _AutoCheckInOutState extends State<AutoCheckInOut> {
       setState(() {
         _isCheckedIn = true;
         _attendanceMessage =
-            'Checked in at Latitude: $_currentLatitude, Longitude: $_currentLongitude\nTime: ${DateFormat('hh:mm a').format(_checkInTime!)}';
+            'Checked in at Latitude: $_currentLatitude, Longitude: $_currentLongitude\n Time: ${DateFormat('hh:mm:ss').format(_checkInTime!)}';
       });
 
       String docId = DateFormat('yyyy-MM-dd_HH:mm:ss').format(_checkInTime!);
@@ -150,7 +150,7 @@ class _AutoCheckInOutState extends State<AutoCheckInOut> {
 
       setState(() {
         _attendanceMessage =
-            'Checked out at Latitude: $_currentLatitude, Longitude: $_currentLongitude\nTime: ${DateFormat('hh:mm a').format(_checkOutTime!)}\nTotal Working Hours: $formattedDuration';
+            'Checked out at Latitude: $_currentLatitude, Longitude: $_currentLongitude\nTime: ${DateFormat('hh:mm:ss').format(_checkOutTime!)}\nTotal Working Hours: $formattedDuration';
         _isCheckedIn = false;
       });
 

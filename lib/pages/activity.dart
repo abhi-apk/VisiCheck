@@ -50,9 +50,9 @@ class _ActivityState extends State<Activity> {
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('users')
-            .doc(user?.email) // Use email as the document ID
+            .doc(user?.email)
             .collection('attendance')
-            .orderBy('checkInTime', descending: true) // Order by check-in time
+            .orderBy('checkInTime', descending: true)
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -111,7 +111,7 @@ class _ActivityState extends State<Activity> {
                 margin:
                     const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                 color:
-                    Color.fromRGBO(22, 22, 22, 1), // Set card background color
+                    Color.fromRGBO(22, 22, 22, 1),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
@@ -132,9 +132,9 @@ class _ActivityState extends State<Activity> {
                       ExpansionTile(
                         title: const Text('View Details',
                             style: TextStyle(color: Colors.white)),
-                        iconColor: Colors.white, // Change icon color to white
+                        iconColor: Colors.white,
                         backgroundColor: Color.fromRGBO(22, 22, 22,
-                            1), // Set background color for ExpansionTile
+                            1),
                         children: records.map((data) {
                           final checkInTime = data['checkInTime'] as Timestamp;
                           final checkOutTime = data.containsKey('checkOutTime')
@@ -143,7 +143,7 @@ class _ActivityState extends State<Activity> {
 
                           return Container(
                             color: Color.fromRGBO(22, 22, 22,
-                                1), // Set background color for ListTile
+                                1),
                             child: ListTile(
                               title: Text(
                                 'Check-in: ${checkInTime.toDate()}',
@@ -197,6 +197,6 @@ class _ActivityState extends State<Activity> {
     String hours = twoDigits(duration.inHours);
     String minutes = twoDigits(duration.inMinutes.remainder(60));
     String seconds = twoDigits(duration.inSeconds.remainder(60));
-    return "$hours:$minutes:$seconds"; // Format as hours:minutes:seconds
+    return "$hours:$minutes:$seconds";
   }
 }
