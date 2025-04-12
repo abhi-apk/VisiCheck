@@ -39,7 +39,7 @@ class MyTextField extends StatelessWidget {
               color: Color.fromRGBO(80, 72, 82, 1),
               
               fontSize: 15,
-              fontWeight: FontWeight.bold
+              // fontWeight: FontWeight.bold
             )),
       ),
     );

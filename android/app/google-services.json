@@ -1,8 +1,9 @@
 {
   "project_info": {
     "project_number": "618096157533",
+    "firebase_url": "https://visicheck-12e19-default-rtdb.firebaseio.com",
     "project_id": "visicheck-12e19",
-    "storage_bucket": "visicheck-12e19.appspot.com"
+    "storage_bucket": "visicheck-12e19.firebasestorage.app"
   },
   "client": [
     {
@@ -12,7 +13,28 @@
           "package_name": "com.example.visicheck"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "618096157533-25v7ta9htqa540ra28pm5ot9mr5sckuj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.visicheck",
+            "certificate_hash": "9a9ff4a4cea5bb149c78c7eb11dac0e27a1ab483"
+          }
+        },
+        {
+          "client_id": "618096157533-fra81mqfc41hi528r4jlpn0h2spcm8hb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.visicheck",
+            "certificate_hash": "fd4950c9a7f12e334866dd98a0ec55f26476213c"
+          }
+        },
+        {
+          "client_id": "618096157533-v887la6ll24qa2ioqrgneo0rfh27ri3h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyD56lGOZpB786q_UFwArVQ7lOHnaBwW6d8"
@@ -20,7 +42,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "618096157533-v887la6ll24qa2ioqrgneo0rfh27ri3h.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "618096157533-e4j4ufbeobm6lafskid98d0r88a4u4q2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.visicheck"
+              }
+            }
+          ]
         }
       }
     }

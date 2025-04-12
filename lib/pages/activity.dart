@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert'; // Import for JSON decoding
 
 class Activity extends StatefulWidget {
   const Activity({super.key});
@@ -32,6 +34,15 @@ class _ActivityState extends State<Activity> {
   Widget build(BuildContext context) {
     final User? user = FirebaseAuth.instance.currentUser;
 
+    Future<String> _findAddress(double latitude, double longitude) async {
+      final url = Uri.parse(
+          'https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=AIzaSyCBADoZ2LTU9_Ka_TNOPxQ29xhCG9PB6ac');
+      final response = await http.get(url);
+      final resData = json.decode(response.body);
+      final address = resData['results'][0]['formatted_address'];
+      return address;
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Activity',
@@ -50,9 +61,9 @@ class _ActivityState extends State<Activity> {
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('users')
-            .doc(user?.email)
+            .doc(user?.email) // Use email as the document ID
             .collection('attendance')
-            .orderBy('checkInTime', descending: true)
+            .orderBy('checkInTime', descending: true) // Order by check-in time
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -74,6 +85,9 @@ class _ActivityState extends State<Activity> {
             final data = record.data() as Map<String, dynamic>?;
 
             if (data == null) continue;
+
+            final address = _findAddress(data!['checkInLocation'].latitude,
+                data['checkInLocation'].longitude); // Fetch address
 
             final checkInTime = data['checkInTime'] as Timestamp;
 
@@ -98,7 +112,9 @@ class _ActivityState extends State<Activity> {
               for (var record in records) {
                 final checkInTime = record['checkInTime'] as Timestamp;
                 final checkOutTime = record.containsKey('checkOutTime')
-                    ? (record['checkOutTime'] as Timestamp)
+                    ? (record['checkOutTime'] != null
+                        ? record['checkOutTime'] as Timestamp
+                        : null)
                     : null;
 
                 if (checkOutTime != null) {
@@ -111,7 +127,7 @@ class _ActivityState extends State<Activity> {
                 margin:
                     const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                 color:
-                    Color.fromRGBO(22, 22, 22, 1),
+                    Color.fromRGBO(22, 22, 22, 1), // Set card background color
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
@@ -132,52 +148,113 @@ class _ActivityState extends State<Activity> {
                       ExpansionTile(
                         title: const Text('View Details',
                             style: TextStyle(color: Colors.white)),
-                        iconColor: Colors.white,
+                        iconColor: Colors.white, // Change icon color to white
                         backgroundColor: Color.fromRGBO(22, 22, 22,
-                            1),
+                            1), // Set background color for ExpansionTile
                         children: records.map((data) {
-                          final checkInTime = data['checkInTime'] as Timestamp;
-                          final checkOutTime = data.containsKey('checkOutTime')
-                              ? (data['checkOutTime'] as Timestamp)
+                          final checkInTime = data['checkInTime'] != null
+                              ? data['checkInTime'] as Timestamp
                               : null;
+                          final checkOutTime =
+                              data.containsKey('checkOutTime') &&
+                                      data['checkOutTime'] != null
+                                  ? data['checkOutTime'] as Timestamp
+                                  : null;
 
-                          return Container(
-                            color: Color.fromRGBO(22, 22, 22,
-                                1),
-                            child: ListTile(
+                          if (checkInTime == null) {
+                            return const ListTile(
                               title: Text(
-                                'Check-in: ${checkInTime.toDate()}',
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white),
+                                'Invalid record: Missing check-in time',
+                                style: TextStyle(color: Colors.red),
                               ),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Location: ${data['checkInLocation'].latitude}, ${data['checkInLocation'].longitude}',
-                                    style: const TextStyle(color: Colors.white),
-                                  ),
-                                  if (checkOutTime != null) ...[
+                            );
+                          }
+
+                          return FutureBuilder<String>(
+                            future: _findAddress(
+                                data['checkInLocation']?.latitude ?? 0.0,
+                                data['checkInLocation']?.longitude ?? 0.0),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Center(
+                                    child: CircularProgressIndicator());
+                              }
+
+                              if (snapshot.hasError) {
+                                return Text(
+                                  'Error: ${snapshot.error}',
+                                  style: const TextStyle(color: Colors.red),
+                                );
+                              }
+
+                              final checkInAddress = snapshot.data ?? 'Unknown';
+                              return ListTile(
+                                title: Text(
+                                  'Check-in: ${checkInTime.toDate()}',
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
+                                ),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
                                     Text(
-                                      'Check-out: ${checkOutTime.toDate()}',
+                                      'Location: $checkInAddress',
                                       style:
                                           const TextStyle(color: Colors.white),
                                     ),
-                                    Text(
-                                      'Location: ${data['checkOutLocation'].latitude}, ${data['checkOutLocation'].longitude}',
-                                      style:
-                                          const TextStyle(color: Colors.white),
-                                    ),
-                                  ] else ...[
-                                    const Text(
-                                      'Checked in but not yet checked out.',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
+                                    if (checkOutTime != null) ...[
+                                      Text(
+                                        'Check-out: ${checkOutTime.toDate()}',
+                                        style: const TextStyle(
+                                            color: Colors.white),
+                                      ),
+                                      FutureBuilder<String>(
+                                        future: _findAddress(
+                                            data['checkOutLocation']
+                                                    ?.latitude ??
+                                                0.0,
+                                            data['checkOutLocation']
+                                                    ?.longitude ??
+                                                0.0),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return const Text(
+                                              'Loading location...',
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            );
+                                          }
+                                          if (snapshot.hasError) {
+                                            return Text(
+                                              'Error: ${snapshot.error}',
+                                              style: const TextStyle(
+                                                  color: Colors.red),
+                                            );
+                                          }
+                                          final checkOutAddress =
+                                              snapshot.data ?? 'Unknown';
+                                          return Text(
+                                            'Location: $checkOutAddress',
+                                            style: const TextStyle(
+                                                color: Colors.white),
+                                          );
+                                        },
+                                      ),
+                                    ] else ...[
+                                      const Text(
+                                        'Check-out Pending',
+                                        style: TextStyle(
+                                            color: Colors.orange,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
                                   ],
-                                ],
-                              ),
-                            ),
+                                ),
+                              );
+                            },
                           );
                         }).toList(),
                       ),
@@ -197,6 +274,6 @@ class _ActivityState extends State<Activity> {
     String hours = twoDigits(duration.inHours);
     String minutes = twoDigits(duration.inMinutes.remainder(60));
     String seconds = twoDigits(duration.inSeconds.remainder(60));
-    return "$hours:$minutes:$seconds";
+    return "$hours:$minutes:$seconds"; // Format as hours:minutes:seconds
   }
 }

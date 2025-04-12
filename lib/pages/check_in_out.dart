@@ -28,12 +28,13 @@ class _CheckInOutState extends State<CheckInOut> {
   }
 
   Future<void> _retrieveIncompleteCheckIn() async {
+    // Query Firestore for incomplete check-ins
     var attendanceRecords = await FirebaseFirestore.instance
         .collection('users')
         .doc(user?.email)
         .collection('attendance')
         .where('checkOutTime', isNull: true) // Incomplete check-ins
-        .orderBy('checkInTime', descending: true)
+        .orderBy('checkInTime', descending: true) // Get latest check-in
         .limit(1)
         .get();
 
@@ -111,7 +112,7 @@ class _CheckInOutState extends State<CheckInOut> {
           .set({
         'checkInLocation': GeoPoint(_latitude!, _longitude!),
         'checkInTime': _checkInTime,
-        'checkOutTime': null,
+        'checkOutTime': null, // Initially null
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

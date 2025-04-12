@@ -28,12 +28,19 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize Firebase
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  // if (Firebase.apps.isEmpty) {
+  // if (Firebase.apps.isEmpty) {
+  await Firebase.initializeApp(
+    name: "visicheck",
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  // }
+  // }
 
   // Initialize WorkManager for background tasks
   Workmanager().initialize(
-    callbackDispatcher,  // Background task dispatcher function
-    isInDebugMode: true,  // Set to false for production mode
+    callbackDispatcher, // Background task dispatcher function
+    isInDebugMode: true, // Set to false for production mode
   );
 
   // Request location permissions at app start
@@ -50,8 +57,9 @@ void main() async {
   Workmanager().registerPeriodicTask(
     "1",
     "checkInOutTask",
-    frequency: const Duration(seconds: 1),  // Updated frequency
-    initialDelay: const Duration(seconds: 2),  // Initial delay for starting the task
+    frequency: const Duration(seconds: 1), // Updated frequency
+    initialDelay:
+        const Duration(seconds: 2), // Initial delay for starting the task
   );
 
   runApp(
@@ -143,7 +151,7 @@ class MyApp extends StatelessWidget {
               fontFamily: 'CenturyGothic', fontWeight: FontWeight.w700),
         ),
       ),
-      home: const AuthPage(),  // AuthPage as the home page
+      home: const AuthPage(), // AuthPage as the home page
     );
   }
 }
