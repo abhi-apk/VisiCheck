@@ -1,16 +1,33 @@
-# visicheck
+# VisiCheck
 
-A new Flutter project.
+**VisiCheck** is a cross-platform, real-time geolocation-based attendance system built using Flutter and Firebase. It enables organizations to accurately track user attendance with tamper-proof GPS-based check-ins and check-outs.
 
-## Getting Started
+## 🚀 Features
 
-This project is a starting point for a Flutter application.
+- 📍 **Geolocation-based Attendance**  
+  Tracks attendance based on real-time GPS coordinates using the Google Maps API.
 
-A few resources to get you started if this is your first Flutter project:
+- 🗺️ **Reverse Geocoding**  
+  Converts latitude and longitude into readable addresses using Google’s Reverse Geocoding API.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- 🔐 **Authentication**  
+  Secure login and registration via Firebase Authentication.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- ☁️ **Realtime Database**  
+  Uses Firebase Firestore to store user data, attendance logs, and location metadata.
+
+- 🔔 **Notifications**  
+  Real-time alerts and attendance confirmations using Firebase Cloud Messaging and Cloud Functions.
+
+- 📱 **Cross-Platform App**  
+  Built using Flutter to ensure smooth operation on both Android and iOS.
+
+## 🛠️ Tech Stack
+
+- **Flutter** & **Dart**
+- **Firebase Authentication**
+- **Firebase Firestore**
+- **Firebase Cloud Functions**
+- **Firebase Cloud Messaging**
+- **Google Maps API**
+- **Google Reverse Geocoding API**
