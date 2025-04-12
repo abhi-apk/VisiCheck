@@ -36,7 +36,7 @@ class _ActivityState extends State<Activity> {
 
     Future<String> _findAddress(double latitude, double longitude) async {
       final url = Uri.parse(
-          'https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=AIzaSyCBADoZ2LTU9_Ka_TNOPxQ29xhCG9PB6ac');
+          'https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=GOOGLE_MAPS_API_KEY');
       final response = await http.get(url);
       final resData = json.decode(response.body);
       final address = resData['results'][0]['formatted_address'];
