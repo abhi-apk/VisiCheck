@@ -5,7 +5,7 @@
 ## 🚀 Features
 
 - 📍 **Geolocation-based Attendance**  
-  Tracks attendance based on real-time GPS coordinates using the Google Maps API.
+  Tracks attendance based on real-time GPS coordinates using the Geolocator Package.
 
 - 🗺️ **Reverse Geocoding**  
   Converts latitude and longitude into readable addresses using Google’s Reverse Geocoding API.
