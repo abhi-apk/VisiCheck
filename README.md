@@ -16,9 +16,6 @@
 - ☁️ **Realtime Database**  
   Uses Firebase Firestore to store user data, attendance logs, and location metadata.
 
-- 🔔 **Notifications**  
-  Real-time alerts and attendance confirmations using Firebase Cloud Messaging and Cloud Functions.
-
 - 📱 **Cross-Platform App**  
   Built using Flutter to ensure smooth operation on both Android and iOS.
 
@@ -27,7 +24,4 @@
 - **Flutter** & **Dart**
 - **Firebase Authentication**
 - **Firebase Firestore**
-- **Firebase Cloud Functions**
-- **Firebase Cloud Messaging**
-- **Google Maps API**
 - **Google Reverse Geocoding API**
